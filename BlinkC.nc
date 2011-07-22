@@ -29,8 +29,6 @@
  * 94704.  Attention:  Intel License Inquiry.
  */
 
-#include "puff.h"
-
 module BlinkC {
   uses {
     interface Boot;
@@ -40,19 +38,24 @@ module BlinkC {
 
 implementation {
   event void Boot.booted() {
-    unsigned char data[] = { 
-      0x2b, 0xcf, 0x57, 0xc8, 0x2c, 0x2e, 0x51, 0x48, 0x49, 0x2d, 0x52, 0x48, 0xca, 0xcf, 0x4, 0x0, 0x26, 0x9, 0x5, 0xc
-    };
+    unsigned long i = 0, u = 0;
+    uint16_t b = 0;
 
-    unsigned long data_len = sizeof(data); 
+    __asm("nop");
 
-    unsigned char msg[32];
-    unsigned long msg_len = 32;
+    b = pgm_read_byte_far(0);
 
-    if(puff(msg, &msg_len, data, &data_len)) {
+    __asm("nop");
+
+/*
+    for(i = 0; i < 1024; i++) {
+      for(u = 0; u < 1024; u++) {
+        b += pgm_read_byte_far(u & 0x355);
+      }
+    }
+*/
+    if(b > 0) {
       call Leds.led0Toggle();
-    } else {
-      call Leds.led1Toggle();
     }
   }
 }
